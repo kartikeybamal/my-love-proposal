@@ -180,8 +180,15 @@ button,input{
   <button onclick="yesClicked()">Always 😭❤️</button>
 </div>
 
+<!-- ✅ FINAL WITH VIDEO (ONLY ADDITION) -->
 <div id="final" class="hidden">
   <h2>You said YES 💖🎉</h2>
+
+  <video id="finalVideo" controls autoplay playsinline width="100%"
+         style="margin-top:20px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.6)">
+    <source src="your-video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </div>
 
 </div>
@@ -202,11 +209,8 @@ const music=document.getElementById("bgMusic");
 function checkPass(){
   if(pass.value===SECRET){
     transition(lock,page1);
-
-    /* 🎵 PLAY MUSIC IMMEDIATELY (MOBILE SAFE) */
-    music.volume = 1;
+    music.volume=1;
     music.play().catch(()=>{});
-
   }else{
     passMsg.textContent="Wrong password 💔";
   }
@@ -242,9 +246,7 @@ function tapSunflower(){
     rotationY:180,
     duration:1.2,
     ease:"power2.inOut",
-    onComplete:()=>{
-      sunflower.classList.remove("heartbeat");
-    }
+    onComplete:()=>sunflower.classList.remove("heartbeat")
   });
 
   sunMessage.classList.remove("hidden");
@@ -295,6 +297,11 @@ gsap.to("#heartbeat",{scale:1.1,repeat:-1,yoyo:true,duration:.8});
 /* FINAL */
 function yesClicked(){
   transition(proposal,final);
+
+  setTimeout(()=>{
+    const v=document.getElementById("finalVideo");
+    if(v) v.play().catch(()=>{});
+  },600);
 }
 </script>
 
