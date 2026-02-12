@@ -135,7 +135,8 @@ button:hover{transform:scale(1.05);}
 <div id="page1" class="hidden">
   <h1>Hey My Love ✨💖</h1>
 
-  <img src="sunflower.png" id="sunflower" class="sunflower">
+  <!-- ✅ UPDATED IMAGE NAME ONLY -->
+  <img src="aaron-burden-2IzoIHBgYAo-unsplash.jpg" id="sunflower" class="sunflower">
 
   <p id="sunMessage" class="hidden">
     May you always turn toward the light,<br>
@@ -146,7 +147,6 @@ button:hover{transform:scale(1.05);}
   <button id="tapBtn" onclick="tapSunflower()">Tap 🌻</button>
   <button id="nextBtn" class="hidden" onclick="goPage2()">Next →</button>
 
-  <!-- ⚠️ DANGER LINE (KEPT) -->
   <div class="danger">
     ⚠️ <b>Danger Ahead</b><br>
     Excessive smiling & heart melting
@@ -237,10 +237,10 @@ function tapSunflower(){
   tapBtn.style.display="none";
 }
 
-/* RIDDLES (AUTO NEXT ON CORRECT) */
+/* RIDDLES */
 const riddles=[
 {q:"What was the date we first saw each other?",o:["23th-Nov","24th-Nov","25th-Nov","10th-Dec"],a:1},
-{q:"What was the first thing I ever made for you?",o:["Omelette" ,"Sandwich" ,"Paneer"],a:0},
+{q:"What was the first thing I ever made for you?",o:["Omelette","Sandwich","Paneer"],a:0},
 {q:"Who is the reason behind my smile?",o:["You","Coffee","Sleep","Luck","Music"],a:0},
 {q:"What feels like home?",o:["House","Bed","You","City","Music"],a:2}
 ];
