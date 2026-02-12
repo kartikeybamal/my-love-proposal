@@ -21,14 +21,12 @@ body{
   overflow:hidden;
 }
 
-/* Floating hearts */
 .heart{
   position:absolute;
   font-size:24px;
   opacity:.6;
 }
 
-/* Card */
 .card{
   background:rgba(0,0,0,.85);
   backdrop-filter:blur(10px);
@@ -59,7 +57,6 @@ button,input{
   cursor:pointer;
 }
 
-/* Music button */
 #musicToggle{
   position:fixed;
   bottom:20px;
@@ -71,7 +68,6 @@ button,input{
   font-size:20px;
 }
 
-/* Sunflower */
 .sunflower{
   width:170px;
   margin:20px auto;
@@ -94,20 +90,6 @@ button,input{
 .heartbeat{
   animation:heartbeat .6s infinite;
 }
-
-.option{display:block;margin:8px 0;}
-.correct{background:#4CAF50!important;}
-.wrong{background:#ff4d6d!important;}
-
-.confetti{
-  position:fixed;
-  width:8px;
-  height:8px;
-  animation:fall 3s linear forwards;
-}
-@keyframes fall{
-  to{transform:translateY(110vh) rotate(720deg);opacity:0;}
-}
 </style>
 </head>
 
@@ -118,9 +100,9 @@ button,input{
 <div class="heart">💘</div>
 <div class="heart">❤️</div>
 
-<!-- 🎵 AUDIO -->
+<!-- 🎵 AUDIO (RENAMED FILE) -->
 <audio id="bgMusic" preload="auto">
-  <source src="Taylor_Swift_-_Lover_(Official_Music_Video)_128k.mp3" type="audio/mpeg">
+  <source src="lover.mp3" type="audio/mpeg">
 </audio>
 
 <button id="musicToggle" onclick="toggleMusic()">🎵</button>
@@ -133,9 +115,6 @@ button,input{
   <input id="pass" placeholder="Password">
   <br>
   <button onclick="checkPass()">Unlock 💖</button>
-  <button onclick="showHint()">Need a hint 😏</button>
-  <p id="hint"></p>
-  <p id="passMsg"></p>
 </div>
 
 <div id="page1" class="hidden">
@@ -152,86 +131,33 @@ button,input{
     and bloom forever in my heart 🌻💖
   </p>
 
-  <button id="nextBtn" class="hidden" onclick="goPage2()">Next →</button>
-</div>
-
-<div id="page2" class="hidden">
-  <h2>Riddles of Love 💌</h2>
-  <p id="question"></p>
-  <div id="options"></div>
-  <p id="chances"></p>
-</div>
-
-<div id="memory" class="hidden">
-  <h2>Our Little Story 📖</h2>
-  <p>
-    From a simple hello…<br>
-    to countless smiles,<br>
-    shared laughter,<br>
-    and moments that quietly became everything 💕
-  </p>
-  <button onclick="goProposal()">Continue ➜</button>
-</div>
-
-<div id="proposal" class="hidden">
-  <h2 id="heartbeat">One Last Question… 💖</h2>
-  <p>Will you be mine? 💍</p>
-  <button onclick="yesClicked()">YES 💕</button>
-  <button onclick="yesClicked()">Always 😭❤️</button>
-</div>
-
-<div id="final" class="hidden">
-  <h2>You said YES 💖🎉</h2>
+  <button id="nextBtn" class="hidden">Next →</button>
 </div>
 
 </div>
 
 <script>
-/* Floating hearts */
-gsap.utils.toArray(".heart").forEach(h=>{
-  gsap.fromTo(h,
-    {x:Math.random()*window.innerWidth,y:window.innerHeight},
-    {y:-100,duration:7+Math.random()*4,repeat:-1,ease:"linear"}
-  );
-});
+const music = document.getElementById("bgMusic");
 
-/* PASSWORD */
-const SECRET="love";
-const music=document.getElementById("bgMusic");
-
+/* PASSWORD UNLOCK — MUSIC STARTS HERE (iOS SAFE) */
 function checkPass(){
-  if(pass.value===SECRET){
-    transition(lock,page1);
+  if(pass.value === "love"){
+    lock.classList.add("hidden");
+    page1.classList.remove("hidden");
 
-    // 🎵 PLAY MUSIC AFTER 22 SECONDS
-    setTimeout(()=>{
-      music.volume=0;
-      music.play().then(()=>{
-        gsap.to(music,{volume:1,duration:4});
-      }).catch(()=>{});
-    },22000);
+    // ✅ iOS-allowed audio start
+    music.volume = 0;
+    music.currentTime = 22; // jump to 22 seconds
+    music.play();
 
-  }else{
-    passMsg.textContent="Wrong password 💔";
+    // smooth fade in
+    gsap.to(music,{volume:1,duration:4});
   }
-}
-
-function showHint(){
-  hint.textContent="Four letters. You already have it 💖";
 }
 
 /* MUSIC TOGGLE */
 function toggleMusic(){
   music.paused ? music.play() : music.pause();
-}
-
-/* TRANSITION */
-function transition(from,to){
-  gsap.to(from,{opacity:0,y:-20,duration:.4,onComplete:()=>{
-    from.classList.add("hidden");
-    to.classList.remove("hidden");
-    gsap.fromTo(to,{opacity:0,y:30},{opacity:1,y:0,duration:.6});
-  }});
 }
 
 /* SUNFLOWER */
@@ -252,53 +178,8 @@ function tapSunflower(){
   });
 
   sunMessage.classList.remove("hidden");
-  gsap.fromTo("#sunMessage",{opacity:0,y:20},{opacity:1,y:0,duration:.8,delay:.6});
+  gsap.fromTo(sunMessage,{opacity:0,y:20},{opacity:1,y:0,duration:.8,delay:.6});
   nextBtn.classList.remove("hidden");
-}
-
-/* RIDDLES */
-const riddles=[
-{q:"What was the date we first saw each other?",o:["23th-Nov","24th-Nov","25th-Nov","10th-Dec"],a:1},
-{q:"What was the first thing I ever made for you?",o:["Omelette","Sandwich","Paneer"],a:0},
-{q:"Who is the reason behind my smile?",o:["You","Coffee","Sleep","Luck","Music"],a:0},
-{q:"What feels like home?",o:["House","Bed","You","City","Music"],a:2}
-];
-
-let r=0,tries=2 ;
-function goPage2(){transition(page1,page2);loadRiddle();}
-
-function loadRiddle(){
-  tries=3;
-  question.textContent=riddles[r].q;
-  chances.textContent="Chances left: "+tries;
-  options.innerHTML="";
-  riddles[r].o.forEach((t,i)=>{
-    const b=document.createElement("button");
-    b.textContent=t;
-    b.className="option";
-    b.onclick=()=>check(i,b);
-    options.appendChild(b);
-  });
-}
-
-function check(i,b){
-  if(i===riddles[r].a){
-    b.classList.add("correct");
-    setTimeout(()=>{r++;r<riddles.length?loadRiddle():transition(page2,memory)},800);
-  }else{
-    tries--;
-    b.classList.add("wrong");
-    chances.textContent="Chances left: "+tries;
-  }
-}
-
-/* PROPOSAL */
-function goProposal(){transition(memory,proposal);}
-gsap.to("#heartbeat",{scale:1.1,repeat:-1,yoyo:true,duration:.8});
-
-/* FINAL */
-function yesClicked(){
-  transition(proposal,final);
 }
 </script>
 
