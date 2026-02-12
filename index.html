@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hey My Love 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ff69b4,#000);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+/* Floating hearts */
+.heart{
+  position:absolute;
+  font-size:24px;
+  opacity:.6;
+}
+
+/* Card */
+.card{
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(10px);
+  border-radius:30px;
+  padding:32px;
+  max-width:540px;
+  width:92%;
+  text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  z-index:2;
+}
+
+.hidden{display:none;}
+
+h1,h2{
+  font-family:'Playfair Display',serif;
+  color:#ff9ed0;
+}
+
+button,input{
+  background:linear-gradient(135deg,#ff69b4,#ffc0da);
+  color:#000;
+  border:none;
+  padding:14px 30px;
+  border-radius:40px;
+  font-weight:600;
+  margin:10px;
+  cursor:pointer;
+}
+button:hover{transform:scale(1.05);}
+
+/* Music */
+#musicToggle{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:#ff69b4;
+  font-size:20px;
+}
+
+/* Sunflower */
+.sunflower{
+  width:170px;
+  margin:20px auto;
+  transform-style:preserve-3d;
+}
+
+/* Danger */
+.danger{
+  margin-top:25px;
+  font-size:.95rem;
+  opacity:.8;
+}
+
+/* Riddle */
+.option{display:block;margin:8px 0;}
+.correct{background:#4CAF50!important;}
+.wrong{background:#ff4d6d!important;}
+
+/* Confetti */
+.confetti{
+  position:fixed;
+  width:8px;
+  height:8px;
+  animation:fall 3s linear forwards;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Floating hearts -->
+<div class="heart">💖</div>
+<div class="heart">💕</div>
+<div class="heart">💘</div>
+<div class="heart">❤️</div>
+
+<audio id="bgMusic" loop>
+  <source src="lover.mp3" type="audio/mp3">
+</audio>
+<button id="musicToggle" onclick="toggleMusic()">🎵</button>
+
+<div class="card">
+
+<!-- PASSWORD -->
+<div id="lock">
+  <h1>🔐 Secret Gate</h1>
+  <p>Only my love can enter 💕</p>
+  <input id="pass" placeholder="Password">
+  <br>
+  <button onclick="checkPass()">Unlock 💖</button>
+  <button onclick="showHint()">Need a hint 😏</button>
+  <p id="hint"></p>
+  <p id="passMsg"></p>
+</div>
+
+<!-- PAGE 1 -->
+<div id="page1" class="hidden">
+  <h1>Hey My Love ✨💖</h1>
+
+  <img src="sunflower.png" id="sunflower" class="sunflower">
+
+  <p id="sunMessage" class="hidden">
+    May you always turn toward the light,<br>
+    shine brighter than the sun,<br>
+    and bloom forever in my heart 🌻💖
+  </p>
+
+  <button id="tapBtn" onclick="tapSunflower()">Tap 🌻</button>
+  <button id="nextBtn" class="hidden" onclick="goPage2()">Next →</button>
+
+  <!-- ⚠️ DANGER LINE (KEPT) -->
+  <div class="danger">
+    ⚠️ <b>Danger Ahead</b><br>
+    Excessive smiling & heart melting
+  </div>
+</div>
+
+<!-- RIDDLES -->
+<div id="page2" class="hidden">
+  <h2>Riddles of Love 💌</h2>
+  <p id="question"></p>
+  <div id="options"></div>
+  <p id="chances"></p>
+</div>
+
+<!-- MEMORY -->
+<div id="memory" class="hidden">
+  <h2>Our Little Story 📖</h2>
+  <p>
+    From a simple hello…<br>
+    to countless smiles,<br>
+    shared laughter,<br>
+    and moments that quietly became everything 💕
+  </p>
+  <button onclick="goProposal()">Continue ➜</button>
+</div>
+
+<!-- PROPOSAL -->
+<div id="proposal" class="hidden">
+  <h2 id="heartbeat">One Last Question… 💖</h2>
+  <p>Will you be mine? 💍</p>
+  <button onclick="yesClicked()">YES 💕</button>
+  <button onclick="yesClicked()">Always 😭❤️</button>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="hidden">
+  <h2>You said YES 💖🎉</h2>
+  <video controls width="100%">
+    <source src="your-video.mp4" type="video/mp4">
+  </video>
+</div>
+
+</div>
+
+<script>
+/* FLOATING HEARTS */
+gsap.utils.toArray(".heart").forEach(h=>{
+  gsap.fromTo(h,
+    {x:Math.random()*window.innerWidth,y:window.innerHeight},
+    {y:-100,duration:7+Math.random()*4,repeat:-1,ease:"linear"}
+  );
+});
+
+/* PASSWORD */
+const SECRET="love";
+function checkPass(){
+  if(pass.value===SECRET){
+    transition(lock,page1);
+    fadeInMusic();
+  }else passMsg.textContent="Wrong password 💔";
+}
+function showHint(){hint.textContent="Four letters. You already have it 💖";}
+
+/* MUSIC */
+const music=document.getElementById("bgMusic");
+function fadeInMusic(){
+  music.volume=0;
+  music.play();
+  gsap.to(music,{volume:1,duration:3});
+}
+function toggleMusic(){music.paused?music.play():music.pause();}
+
+/* TRANSITIONS */
+function transition(from,to){
+  gsap.to(from,{opacity:0,y:-20,duration:.4,onComplete:()=>{
+    from.classList.add("hidden");
+    to.classList.remove("hidden");
+    gsap.fromTo(to,{opacity:0,y:30},{opacity:1,y:0,duration:.6});
+  }});
+}
+
+/* SUNFLOWER */
+function tapSunflower(){
+  gsap.to(sunflower,{rotationY:180,duration:1});
+  sunMessage.classList.remove("hidden");
+  gsap.from("#sunMessage",{opacity:0,y:20});
+  nextBtn.classList.remove("hidden");
+  tapBtn.style.display="none";
+}
+
+/* RIDDLES (AUTO NEXT ON CORRECT) */
+const riddles=[
+{q:"What was the date we first saw each other?",o:["23th-Nov","24th-Nov","25th-Nov","10th-Dec"],a:1},
+{q:"What was the first thing I ever made for you?",o:["Omelette" ,"Sandwich" ,"Paneer"],a:0},
+{q:"Who is the reason behind my smile?",o:["You","Coffee","Sleep","Luck","Music"],a:0},
+{q:"What feels like home?",o:["House","Bed","You","City","Music"],a:2}
+];
+let r=0,tries=3;
+
+function goPage2(){transition(page1,page2);loadRiddle();}
+
+function loadRiddle(){
+  tries=3;
+  question.textContent=riddles[r].q;
+  chances.textContent="Chances left: "+tries;
+  options.innerHTML="";
+  riddles[r].o.forEach((t,i)=>{
+    const b=document.createElement("button");
+    b.textContent=t;
+    b.className="option";
+    b.onclick=()=>check(i,b);
+    options.appendChild(b);
+    gsap.from(b,{opacity:0,x:-20,delay:i*.1});
+  });
+}
+
+function check(i,b){
+  if(i===riddles[r].a){
+    b.classList.add("correct");
+    setTimeout(()=>{
+      r++;
+      r<riddles.length ? loadRiddle() : transition(page2,memory);
+    },800);
+  }else{
+    tries--;
+    b.classList.add("wrong");
+    chances.textContent="Chances left: "+tries;
+    if(tries===0){
+      options.children[riddles[r].a].classList.add("correct");
+      setTimeout(()=>{
+        r++;
+        r<riddles.length ? loadRiddle() : transition(page2,memory);
+      },1200);
+    }
+  }
+}
+
+/* PROPOSAL */
+function goProposal(){transition(memory,proposal);}
+gsap.to("#heartbeat",{scale:1.1,repeat:-1,yoyo:true,duration:.8});
+
+/* FINAL */
+function yesClicked(){
+  transition(proposal,final);
+  launchConfetti();
+}
+
+/* CONFETTI */
+function launchConfetti(){
+  for(let i=0;i<150;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=["#ff69b4","#ffc0da","#fff"][Math.floor(Math.random()*3)];
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+
+</body>
+</html>
