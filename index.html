@@ -58,7 +58,6 @@ button,input{
   margin:10px;
   cursor:pointer;
 }
-button:hover{transform:scale(1.05);}
 
 /* Music */
 #musicToggle{
@@ -77,6 +76,26 @@ button:hover{transform:scale(1.05);}
   width:170px;
   margin:20px auto;
   transform-style:preserve-3d;
+  cursor:pointer;
+  transition:filter .3s;
+}
+
+/* Glow effect */
+.glow{
+  filter:drop-shadow(0 0 25px #ffb6e6)
+         drop-shadow(0 0 45px #ff69b4);
+}
+
+/* Heartbeat */
+@keyframes heartbeat{
+  0%{transform:scale(1);}
+  25%{transform:scale(1.05);}
+  50%{transform:scale(1);}
+  75%{transform:scale(1.08);}
+  100%{transform:scale(1);}
+}
+.heartbeat{
+  animation:heartbeat .6s infinite;
 }
 
 /* Danger */
@@ -135,8 +154,13 @@ button:hover{transform:scale(1.05);}
 <div id="page1" class="hidden">
   <h1>Hey My Love ✨💖</h1>
 
-  <!-- ✅ UPDATED IMAGE NAME ONLY -->
-  <img src="aaron-burden-2IzoIHBgYAo-unsplash.jpg" id="sunflower" class="sunflower">
+  <!-- SUNFLOWER -->
+  <img 
+    src="aaron-burden-2IzoIHBgYAo-unsplash.jpg"
+    id="sunflower"
+    class="sunflower"
+    onclick="tapSunflower()"
+  >
 
   <p id="sunMessage" class="hidden">
     May you always turn toward the light,<br>
@@ -144,7 +168,6 @@ button:hover{transform:scale(1.05);}
     and bloom forever in my heart 🌻💖
   </p>
 
-  <button id="tapBtn" onclick="tapSunflower()">Tap 🌻</button>
   <button id="nextBtn" class="hidden" onclick="goPage2()">Next →</button>
 
   <div class="danger">
@@ -228,13 +251,30 @@ function transition(from,to){
   }});
 }
 
-/* SUNFLOWER */
+/* 🌻 SUNFLOWER MAGIC */
+let sunflowerTapped=false;
 function tapSunflower(){
-  gsap.to(sunflower,{rotationY:180,duration:1});
+  if(sunflowerTapped) return;
+  sunflowerTapped=true;
+
+  sunflower.classList.add("glow","heartbeat");
+
+  gsap.to(sunflower,{
+    rotationY:180,
+    duration:1.2,
+    ease:"power2.inOut",
+    onComplete:()=>{
+      sunflower.classList.remove("heartbeat");
+    }
+  });
+
   sunMessage.classList.remove("hidden");
-  gsap.from("#sunMessage",{opacity:0,y:20});
+  gsap.fromTo("#sunMessage",
+    {opacity:0,y:20},
+    {opacity:1,y:0,duration:.8,delay:.6}
+  );
+
   nextBtn.classList.remove("hidden");
-  tapBtn.style.display="none";
 }
 
 /* RIDDLES */
