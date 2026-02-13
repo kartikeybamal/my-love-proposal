@@ -21,14 +21,12 @@ body{
   overflow:hidden;
 }
 
-/* Floating hearts */
 .heart{
   position:absolute;
   font-size:24px;
   opacity:.6;
 }
 
-/* Card */
 .card{
   background:rgba(0,0,0,.85);
   backdrop-filter:blur(10px);
@@ -59,7 +57,6 @@ button,input{
   cursor:pointer;
 }
 
-/* Music button */
 #musicToggle{
   position:fixed;
   bottom:20px;
@@ -71,7 +68,6 @@ button,input{
   font-size:20px;
 }
 
-/* Sunflower */
 .sunflower{
   width:170px;
   margin:20px auto;
@@ -91,9 +87,7 @@ button,input{
   75%{transform:scale(1.08);}
   100%{transform:scale(1);}
 }
-.heartbeat{
-  animation:heartbeat .6s infinite;
-}
+.heartbeat{animation:heartbeat .6s infinite;}
 
 .option{display:block;margin:8px 0;}
 .correct{background:#4CAF50!important;}
@@ -108,6 +102,15 @@ button,input{
 @keyframes fall{
   to{transform:translateY(110vh) rotate(720deg);opacity:0;}
 }
+
+/* ✅ VIDEO FIX */
+#final video{
+  width:100%;
+  max-height:70vh;
+  border-radius:20px;
+  pointer-events:auto;
+  touch-action:manipulation;
+}
 </style>
 </head>
 
@@ -118,7 +121,6 @@ button,input{
 <div class="heart">💘</div>
 <div class="heart">❤️</div>
 
-<!-- 🎵 AUDIO -->
 <audio id="bgMusic" preload="auto">
   <source src="Taylor_Swift_-_Lover_(Official_Music_Video)_128k.mp3" type="audio/mpeg">
 </audio>
@@ -180,13 +182,15 @@ button,input{
   <button onclick="yesClicked()">Always 😭❤️</button>
 </div>
 
-<!-- ✅ FINAL WITH VIDEO (ONLY ADDITION) -->
+<!-- ✅ FINAL VIDEO PAGE -->
 <div id="final" class="hidden">
   <h2>You said YES 💖🎉</h2>
 
-  <video id="finalVideo" controls autoplay playsinline width="100%"
-         style="margin-top:20px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.6)">
-    <source src="your-video.mp4" type="video/mp4">
+  <video id="finalVideo"
+         controls
+         playsinline
+         preload="auto">
+    <source src="20945DA3-B357-4D97-AC43-EAC9778B141C.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
@@ -194,7 +198,6 @@ button,input{
 </div>
 
 <script>
-/* Floating hearts */
 gsap.utils.toArray(".heart").forEach(h=>{
   gsap.fromTo(h,
     {x:Math.random()*window.innerWidth,y:window.innerHeight},
@@ -202,30 +205,24 @@ gsap.utils.toArray(".heart").forEach(h=>{
   );
 });
 
-/* PASSWORD */
 const SECRET="love";
 const music=document.getElementById("bgMusic");
 
 function checkPass(){
   if(pass.value===SECRET){
     transition(lock,page1);
-    music.volume=1;
     music.play().catch(()=>{});
-  }else{
-    passMsg.textContent="Wrong password 💔";
-  }
+  }else passMsg.textContent="Wrong password 💔";
 }
 
 function showHint(){
   hint.textContent="Four letters. You already have it 💖";
 }
 
-/* MUSIC TOGGLE */
 function toggleMusic(){
   music.paused ? music.play() : music.pause();
 }
 
-/* TRANSITION */
 function transition(from,to){
   gsap.to(from,{opacity:0,y:-20,duration:.4,onComplete:()=>{
     from.classList.add("hidden");
@@ -234,27 +231,17 @@ function transition(from,to){
   }});
 }
 
-/* SUNFLOWER */
 let sunflowerTapped=false;
 function tapSunflower(){
   if(sunflowerTapped) return;
   sunflowerTapped=true;
 
   sunflower.classList.add("glow","heartbeat");
-
-  gsap.to(sunflower,{
-    rotationY:180,
-    duration:1.2,
-    ease:"power2.inOut",
-    onComplete:()=>sunflower.classList.remove("heartbeat")
-  });
-
+  gsap.to(sunflower,{rotationY:180,duration:1.2,ease:"power2.inOut"});
   sunMessage.classList.remove("hidden");
-  gsap.fromTo("#sunMessage",{opacity:0,y:20},{opacity:1,y:0,duration:.8,delay:.6});
   nextBtn.classList.remove("hidden");
 }
 
-/* RIDDLES */
 const riddles=[
 {q:"What was the date we first saw each other?",o:["23th-Nov","24th-Nov","25th-Nov","10th-Dec"],a:1},
 {q:"What was the first thing I ever made for you?",o:["Omelette","Sandwich","Paneer"],a:0},
@@ -290,18 +277,11 @@ function check(i,b){
   }
 }
 
-/* PROPOSAL */
 function goProposal(){transition(memory,proposal);}
 gsap.to("#heartbeat",{scale:1.1,repeat:-1,yoyo:true,duration:.8});
 
-/* FINAL */
 function yesClicked(){
   transition(proposal,final);
-
-  setTimeout(()=>{
-    const v=document.getElementById("finalVideo");
-    if(v) v.play().catch(()=>{});
-  },600);
 }
 </script>
 
